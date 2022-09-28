@@ -1,11 +1,47 @@
 import App from './App'
 import store from "store"
-import json from "./json"
+import Json from "./Json"
 
 // #ifndef VUE3
-import Vue from 'vue'
+import Vue, {
+	resolveComponent
+} from 'vue'
 Vue.config.productionTip = false
 App.mpType = 'app'
+
+const msg = (title, duration = 500, mask = false, icon = "none") => {
+	uni.showToast({
+		title: title,
+		duration: duration,
+		mask: mask,
+		icon: icon
+	})
+};
+
+const json = type => {
+	return new Promise(resolve => {
+		setTimeout(() => {
+			resolve(Json[type])
+		}, 500)
+	})
+}
+const prepage = () => {
+	let pages = getCurrentPages()
+	let prePage = pages[pages.length - 2];
+	// #ifdef H5
+	return prePage
+	// #endif
+	return prePage.$vm
+}
+
+Vue.prototype.$fire = new Vue()
+Vue.prototype.$store = store
+Vue.prototype.$api = {
+	msg,
+	json,
+	prepage
+}
+
 const app = new Vue({
 	...App
 })
